@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply m-0 bg-bg font-sans text-sm text-fg antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--figma-color-border-selected);
+    outline-offset: 1px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--figma-color-border-strong);
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0ms !important;
+      animation-duration: 0ms !important;
+    }
+  }
+}
+
+@layer components {
+  .field {
+    @apply h-7 w-full rounded border border-border bg-bg px-2 text-sm text-fg outline-none transition-colors placeholder:text-fg-secondary hover:border-border-strong focus:border-border-selected disabled:cursor-not-allowed disabled:opacity-50;
+  }
+}
