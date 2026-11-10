@@ -1,0 +1,58 @@
+name: Release
+
+# Push a tag like v1.0.1 to build the plugin and attach font-replacer.zip to a GitHub Release.
+# Stable download link: https://github.com/riantisilvi/figma-font-replacer/releases/latest/download/font-replacer.zip
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check, lint, test, and build
+        run: npm run check
+
+      - name: Package the plugin
+        run: |
+          rm -rf package font-replacer.zip
+          mkdir -p package/font-replacer/dist
+          cp manifest.json package/font-replacer/
+          cp dist/code.js dist/ui.html package/font-replacer/dist/
+          cp INSTALL.md package/font-replacer/INSTALL.txt
+          (cd package && zip -r ../font-replacer.zip font-replacer)
+          unzip -l font-replacer.zip
+
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [ "${GITHUB_REF_TYPE}" != "tag" ]; then
+            TAG="v$(node -p "require('./package.json').version")"
+          fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" font-replacer.zip --clobber
+          else
+            gh release create "$TAG" font-replacer.zip \
+              --title "Font Replacer $TAG" \
+              --notes-file INSTALL.md \
+              --latest
+          fi

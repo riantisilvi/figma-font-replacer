@@ -17,6 +17,17 @@ A Figma plugin that finds every font in a selection, a page, or the full file, a
 | Presets | Save the current mapping (for example "Inter to Geist") and apply it in other files. Presets are stored on your computer with `figma.clientStorage`. |
 | Undo | One replace run is one undo step. |
 
+## Install without the command line
+
+Download the ready-made plugin and follow [INSTALL.md](INSTALL.md):
+https://github.com/riantisilvi/figma-font-replacer/releases/latest/download/font-replacer.zip
+
+## Release a new version
+
+1. Change `version` in `package.json`.
+2. Commit, then push a tag with the same version, for example `git tag v1.0.1 && git push origin v1.0.1`.
+3. The Release workflow runs all checks, builds the plugin, and attaches `font-replacer.zip` to a GitHub Release. The download link above then gets the new version.
+
 ## Install for development
 
 1. Install Node.js 18 or later.
